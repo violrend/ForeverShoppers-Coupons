@@ -14,7 +14,7 @@ workflows:
         EXTENSION_BUNDLE_ID: "com.forevershoppers.couponsapp.Extension"
         XCODE_PROJECT: "ForeverShoppersSafari.xcodeproj"
         XCODE_SCHEME: "ForeverShoppers"
-        APP_STORE_APPLE_ID: "6776659193"
+        APP_STORE_APPLE_ID: "6776674345"
         APP_VERSION: "1.0.1"
 
       ios_signing:
