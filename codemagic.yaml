@@ -14,7 +14,6 @@ workflows:
         EXTENSION_BUNDLE_ID: "com.forevershoppers.couponsapp.Extension"
         XCODE_PROJECT: "ForeverShoppersSafari.xcodeproj"
         XCODE_SCHEME: "ForeverShoppers"
-        APP_STORE_APPLE_ID: "6776674345"
         APP_VERSION: "1.0.1"
 
       ios_signing:
@@ -22,14 +21,17 @@ workflows:
         bundle_identifier: com.forevershoppers.couponsapp
 
     scripts:
-      - name: Set versions
+      - name: Set version
         script: |
           agvtool new-marketing-version $APP_VERSION || true
           agvtool new-version -all $BUILD_NUMBER || true
 
-      - name: Build ipa
+      - name: Apply provisioning profiles
         script: |
           xcode-project use-profiles
+
+      - name: Build IPA
+        script: |
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME"
@@ -41,7 +43,4 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        apple_id: $APP_STORE_APPLE_ID
-        submit_to_app_store: false
-        beta_groups:
-          - App Store Connect Users
+        submit_to_testflight: true
