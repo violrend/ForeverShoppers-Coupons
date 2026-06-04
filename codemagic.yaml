@@ -1,0 +1,45 @@
+workflows:
+  ios-safari-extension-workflow:
+    name: ForeverShoppers iOS Safari Extension Build
+
+    integrations:
+      app_store_connect: codemagic
+
+    environment:
+      xcode: 26.4
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.forevershoppers.coupons"
+        EXTENSION_BUNDLE_ID: "com.forevershoppers.coupons.Extension"
+        XCODE_PROJECT: "ForeverShoppersSafari.xcodeproj"
+        XCODE_SCHEME: "ForeverShoppers"
+        APP_STORE_APPLE_ID: "YOUR_APP_STORE_APPLE_ID"
+        DEVELOPMENT_TEAM: "YOUR_TEAM_ID"
+        APP_VERSION: "1.0.1"
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier:
+          - com.forevershoppers.coupons
+          - com.forevershoppers.coupons.Extension
+
+    scripts:
+      - name: Set versions
+        script: |
+          agvtool new-marketing-version $APP_VERSION || true
+          agvtool new-version -all $BUILD_NUMBER || true
+
+      - name: Build ipa
+        script: |
+          xcode-project use-profiles
+          xcode-project build-ipa             --project "$XCODE_PROJECT"             --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_app_store: false
+        beta_groups:
+          - App Store Connect Users
